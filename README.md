@@ -48,5 +48,4 @@ The processed data is connected to a **Looker** dashboard, which provides:
 *   `scripts/`: Main ETL execution logic and synchronization scripts.
 
 *   ### 📊 Looker Dashboard Preview
-![Business Card Performance Dashboard](looker_dashboard.png)
 <img src="looker_dashboard.png" width="800" alt="Dashboard Preview">
