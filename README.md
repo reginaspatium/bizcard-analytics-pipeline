@@ -46,3 +46,6 @@ The processed data is connected to a **Looker** dashboard, which provides:
 *   `sql/`: Aggregation queries for ClickHouse.
 *   `helpers/`: Python utilities for MySQL data enrichment.
 *   `scripts/`: Main ETL execution logic and synchronization scripts.
+
+*   ### 📊 Looker Dashboard Preview
+![Business Card Performance Dashboard](looker_dashboard.jpg)
