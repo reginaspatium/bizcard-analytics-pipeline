@@ -47,5 +47,5 @@ The processed data is connected to a **Looker** dashboard, which provides:
 *   `helpers/`: Python utilities for MySQL data enrichment.
 *   `scripts/`: Main ETL execution logic and synchronization scripts.
 
-*   ### 📊 Looker Dashboard Preview
+  ### 📊 Looker Dashboard Preview
 <img src="looker_dashboard.png" width="800" alt="Dashboard Preview">
