@@ -1,46 +1,96 @@
 import pandas as pd
 from datetime import datetime, timedelta
-import os
 
 from helpers.data_enrichment import get_company_name_dict
 
-def run_business_card_sync(date):
-    """
-    Basic synchronization logic for a specific date
-    """
-    print(f"--- TASK STARTED: {date} ---")
-    
-    try:
-        # 1. EXTRACTION (ClickHouse)
-        print(f"Extracting data from ClickHouse...")
-        
-        # 2. ENRICHMENT & TRANSFORMATION
-        # company_names = get_company_name_dict(mysql_connection, company_ids)
-        print(f"Enriching data with company names from MySQL...")
 
-        # 3. LOADING (PostgreSQL)
-        # df.to_sql('company_business_card', con=postgres_engine, if_exists='append')
-        print(f"Loading data to PostgreSQL success.")
-        
+def extract_data(date_start, date_stop):
+    """
+    Simulated extraction step (ClickHouse).
+    In production this would execute SQL query.
+    """
+    print("Extracting data from ClickHouse...")
+
+    # demo data instead of real DB
+    df = pd.DataFrame({
+        "date": [date_start, date_start],
+        "company_id": [1, 2],
+        "total_view": [120, 80],
+        "unique_view": [100, 60],
+        "total_click": [30, 10],
+        "unique_click": [25, 8],
+        "click_action": ["Показ візитки", "Клік на заголовок"]
+    })
+
+    return df
+
+
+def enrich_data(df):
+    """
+    Enrichment step (MySQL).
+    Replace company_id with company_name.
+    """
+    print("Enriching data with company names...")
+
+    company_ids = df["company_id"].unique().tolist()
+
+    # demo instead of real MySQL
+    company_names = {
+        1: "Company A",
+        2: "Company B"
+    }
+
+    df["company_name"] = df["company_id"].map(company_names).fillna("Unknown")
+
+    return df.drop(columns=["company_id"])
+
+
+def load_data(df):
+    """
+    Load step (PostgreSQL).
+    """
+    print("Loading data to PostgreSQL...")
+
+    # simulate insert
+    print(df.head())
+
+
+def run_business_card_sync(date_start, date_stop):
+    print(f"--- TASK STARTED: {date_start} ---")
+
+    try:
+        df = extract_data(date_start, date_stop)
+        df = enrich_data(df)
+        load_data(df)
+
     except Exception as err:
-        print(f"ERROR for date {date}: {err}")
+        print(f"ERROR: {err}")
+
     finally:
-        print(f"--- TASK FINISHED: {date} ---")
+        print(f"--- TASK FINISHED ---")
+
 
 def main(date_start=None, date_stop=None):
-    """
-    Entry point. Supports launch for yesterday (kron)
-    or for a period (manual launch).
-    """
 
     if not date_start:
-        date_start = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+        date_start = datetime.now() - timedelta(days=1)
+    else:
+        date_start = datetime.strptime(date_start, "%Y-%m-%d")
+
     if not date_stop:
         date_stop = date_start
+    else:
+        date_stop = datetime.strptime(date_stop, "%Y-%m-%d")
 
-    print(f"Starting pipeline from {date_start} to {date_stop}")
-    
-    run_business_card_sync(date_start)
+    current_date = date_start
+
+    while current_date <= date_stop:
+        run_business_card_sync(
+            current_date.strftime("%Y-%m-%d"),
+            current_date.strftime("%Y-%m-%d")
+        )
+        current_date += timedelta(days=1)
+
 
 if __name__ == "__main__":
     main()
